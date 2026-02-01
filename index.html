@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deutsch-Französischer Tag - Kompakt</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #002395 0%, #000000 25%, #DD0000 50%, #FFCE00 75%, #DD0000 100%);
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 1.8em;
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: white;
+            font-size: 1em;
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .instructions {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .page-button {
+            background: linear-gradient(135deg, #002395, #DD0000);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            font-size: 0.95em;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 8px;
+            margin: 5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+
+        .page-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.3);
+        }
+
+        .page-button.active {
+            background: linear-gradient(135deg, #FFCE00, #DD0000);
+            color: #000;
+        }
+
+        .page-container {
+            display: none;
+        }
+
+        .page-container.active {
+            display: block;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .tab-button {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 8px 15px;
+            font-size: 0.9em;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+
+        .tab-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.3);
+        }
+
+        .tab-button.active {
+            background: linear-gradient(135deg, #002395, #DD0000);
+            color: white;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        #vocabulary-section {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        #vocabulary-section.hidden {
+            display: none;
+        }
+
+        .card {
+            perspective: 1000px;
+            height: 110px;
+            cursor: pointer;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .card-front {
+            background: linear-gradient(135deg, #002395, #DD0000);
+            color: white;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+
+        .card-back {
+            background: linear-gradient(135deg, #FFCE00, #DD0000);
+            color: #000;
+            transform: rotateY(180deg);
+            font-size: 0.75em;
+            line-height: 1.2;
+        }
+
+        .date-card .card-front {
+            background: linear-gradient(135deg, #000000, #DD0000, #FFCE00);
+        }
+
+        .date-card .card-back {
+            background: linear-gradient(135deg, #FFCE00, #ffffff);
+            font-size: 0.65em;
+            line-height: 1.3;
+        }
+
+        .symbol-card .card-front {
+            background: linear-gradient(135deg, #002395, #ffffff, #DD0000, #FFCE00, #000000);
+            font-size: 1em;
+        }
+
+        .symbol-card .card-back {
+            background: linear-gradient(135deg, #ffffff, #f0f0f0);
+            color: #000;
+            font-size: 0.65em;
+        }
+
+        .stats {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 8px 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .stats-content {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .stat-item {
+            font-size: 0.85em;
+        }
+
+        .stat-number {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #002395;
+            display: inline;
+        }
+
+        .reset-button {
+            background: linear-gradient(135deg, #DD0000, #000000);
+            color: white;
+            border: none;
+            padding: 6px 15px;
+            font-size: 0.85em;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            margin-left: 15px;
+        }
+
+        .reset-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.3);
+        }
+
+        /* Quiz styles */
+        .matching-game {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 10px auto;
+            max-width: 900px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+
+        .question-container {
+            margin-bottom: 20px;
+        }
+
+        .german-word {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #002395;
+            text-align: center;
+            padding: 15px;
+            background: linear-gradient(135deg, #FFCE00, #ffffff);
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .option-button {
+            background: white;
+            border: 3px solid #002395;
+            padding: 15px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            color: #000;
+        }
+
+        .option-button:hover {
+            background: #f0f0f0;
+            transform: scale(1.02);
+        }
+
+        .option-button.correct {
+            background: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+
+        .option-button.incorrect {
+            background: #f44336;
+            color: white;
+            border-color: #f44336;
+        }
+
+        .option-button:disabled {
+            cursor: not-allowed;
+        }
+
+        .score-display {
+            text-align: center;
+            font-size: 1.3em;
+            margin-top: 15px;
+            padding: 12px;
+            background: linear-gradient(135deg, #002395, #DD0000);
+            color: white;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .nav-button {
+            background: linear-gradient(135deg, #000000, #DD0000);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 0.95em;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .nav-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #002395, #DD0000);
+            transition: width 0.3s ease;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.4em;
+            }
+            
+            .cards-grid {
+                grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+                gap: 8px;
+            }
+            
+            .card {
+                height: 100px;
+            }
+            
+            .card-front {
+                font-size: 0.75em;
+            }
+            
+            .card-back {
+                font-size: 0.65em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🇫🇷 🤝 🇩🇪 Deutsch-Französischer Tag</h1>
+        <div class="subtitle">22. Januar - Tag der deutsch-französischen Freundschaft</div>
+
+        <div class="instructions">
+            <strong>📖 Anleitung:</strong> Klicke auf die Karten, um sie umzudrehen!
+            <div style="margin-top: 8px;">
+                <button class="page-button active" onclick="showPage('cards')">📚 Seite 1: Karten</button>
+                <button class="page-button" onclick="showPage('matching')">🎯 Seite 2: Quiz</button>
+            </div>
+        </div>
+
+        <div id="cards-page" class="page-container active">
+            <div class="tabs">
+                <button class="tab-button active" onclick="showTab('vocabulary')">📚 Wortschatz</button>
+                <button class="tab-button" onclick="showTab('dates')">📅 Daten</button>
+                <button class="tab-button" onclick="showTab('symbols')">🎨 Symbole</button>
+                <button class="tab-button" onclick="showTab('all')">🎯 Alles</button>
+            </div>
+
+            <div id="vocabulary-section" class="cards-grid">
+                <!-- Vocabulary cards will be inserted here -->
+            </div>
+
+            <div id="dates-section" class="cards-grid hidden">
+                <!-- Date cards will be inserted here -->
+            </div>
+
+            <div id="symbols-section" class="cards-grid hidden">
+                <!-- Symbol cards will be inserted here -->
+            </div>
+
+            <div id="all-section" class="cards-grid hidden">
+                <!-- All cards will be inserted here -->
+            </div>
+        </div>
+
+        <div id="matching-page" class="page-container">
+            <div class="matching-game">
+                <h2 style="text-align: center; color: #002395; margin-bottom: 15px; font-size: 1.5em;">🎯 Finde die richtige Übersetzung!</h2>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                </div>
+
+                <div id="question-container" class="question-container">
+                    <!-- Questions will be inserted here -->
+                </div>
+
+                <div class="score-display" id="score-display">
+                    Punktzahl: <span id="score">0</span> / <span id="total-questions">0</span>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="nav-button" id="prev-button" onclick="previousQuestion()" disabled>⬅️ Zurück</button>
+                    <button class="nav-button" id="next-button" onclick="nextQuestion()">Weiter ➡️</button>
+                    <button class="nav-button" id="restart-button" onclick="restartQuiz()" style="display: none;">🔄 Neu starten</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const vocabulary = [
+            { front: "die Freundschaft", back: "l'amitié" },
+            { front: "die Versöhnung", back: "la réconciliation" },
+            { front: "der Frieden", back: "la paix" },
+            { front: "die Zusammenarbeit", back: "la coopération" },
+            { front: "die Partnerschaft", back: "le partenariat" },
+            { front: "der Austausch", back: "l'échange" },
+            { front: "die Begegnung", back: "la rencontre" },
+            { front: "die Brücke", back: "le pont" },
+            { front: "das Nachbarland", back: "le pays voisin" },
+            { front: "die Grenze", back: "la frontière" },
+            { front: "der Vertrag", back: "le traité" },
+            { front: "die Jugend", back: "la jeunesse" },
+            { front: "das Vertrauen", back: "la confiance" },
+            { front: "gemeinsam", back: "ensemble" },
+            { front: "die Verständigung", back: "la compréhension mutuelle" },
+            { front: "die Kultur", back: "la culture" },
+            { front: "die Geschichte", back: "l'histoire" },
+            { front: "die Zukunft", back: "l'avenir" },
+            { front: "europäisch", back: "européen(ne)" },
+            { front: "der Dialog", back: "le dialogue" },
+            { front: "die Solidarität", back: "la solidarité" }
+        ];
+
+        const dates = [
+            { front: "8 mai 1945", back: "🇫🇷 Fin de la Seconde Guerre mondiale en Europe<br>🇩🇪 Ende des Zweiten Weltkriegs in Europa" },
+            { front: "9 mai 1950", back: "🇫🇷 Déclaration Schuman - naissance de l'Europe unie<br>🇩🇪 Schuman-Erklärung - Geburt des vereinten Europas" },
+            { front: "22 janvier 1963", back: "🇫🇷 Signature du Traité de l'Élysée par De Gaulle et Adenauer<br>🇩🇪 Unterzeichnung des Élysée-Vertrags durch De Gaulle und Adenauer" },
+            { front: "1963", back: "🇫🇷 Création de l'Office franco-allemand pour la Jeunesse (OFAJ)<br>🇩🇪 Gründung des Deutsch-Französischen Jugendwerks (DFJW)" },
+            { front: "1989", back: "🇫🇷 Chute du mur de Berlin - symbole de la réunification<br>🇩🇪 Fall der Berliner Mauer - Symbol der Wiedervereinigung" },
+            { front: "22 janvier 2003", back: "🇫🇷 40e anniversaire du Traité de l'Élysée - Journée franco-allemande créée<br>🇩🇪 40. Jahrestag des Élysée-Vertrags - Deutsch-Französischer Tag eingeführt" },
+            { front: "2019", back: "🇫🇷 Signature du Traité d'Aix-la-Chapelle - renouvellement de l'amitié<br>🇩🇪 Unterzeichnung des Aachener Vertrags - Erneuerung der Freundschaft" }
+        ];
+
+        const symbols = [
+            // Monuments allemands
+            { front: "🏰 Brandenburger Tor", back: "🇩🇪 Porte de Brandebourg - Berlin - Symbole de la réunification allemande" },
+            { front: "🏛️ Schloss Neuschwanstein", back: "🇩🇪 Château de Neuschwanstein - Bavière - Chef-d'œuvre romantique" },
+            { front: "⛪ Kölner Dom", back: "🇩🇪 Cathédrale de Cologne - Monument gothique inscrit à l'UNESCO" },
+            
+            // Monuments français
+            { front: "🗼 Tour Eiffel", back: "🇫🇷 Tour Eiffel - Paris - Symbole de la France dans le monde" },
+            { front: "🏰 Château de Versailles", back: "🇫🇷 Château de Versailles - Résidence royale, patrimoine mondial" },
+            { front: "⛪ Notre-Dame de Paris", back: "🇫🇷 Notre-Dame - Cathédrale gothique, cœur de Paris" },
+            
+            // Gastronomie allemande
+            { front: "🥨 Brezel", back: "🇩🇪 Bretzel - Pain traditionnel en forme de nœud, spécialité bavaroise" },
+            { front: "🌭 Bratwurst", back: "🇩🇪 Saucisse grillée - Spécialité allemande incontournable" },
+            { front: "🍺 Bier", back: "🇩🇪 Bière allemande - Tradition brassicole millénaire (Reinheitsgebot 1516)" },
+            { front: "🍰 Schwarzwälder Kirschtorte", back: "🇩🇪 Forêt-Noire - Gâteau au chocolat, chantilly et cerises" },
+            
+            // Gastronomie française
+            { front: "🥖 Baguette", back: "🇫🇷 Baguette - Pain français traditionnel, patrimoine culturel immatériel UNESCO" },
+            { front: "🧀 Fromage", back: "🇫🇷 Fromage - Plus de 1000 variétés, art culinaire français" },
+            { front: "🥐 Croissant", back: "🇫🇷 Croissant - Viennoiserie emblématique du petit-déjeuner français" },
+            { front: "🍷 Vin", back: "🇫🇷 Vin français - Terroirs prestigieux (Bordeaux, Bourgogne, Champagne...)" },
+            
+            // Artistes allemands
+            { front: "🎼 Ludwig van Beethoven", back: "🇩🇪 Compositeur (1770-1827) - Génie de la musique classique, 9e Symphonie" },
+            { front: "🎨 Albrecht Dürer", back: "🇩🇪 Peintre et graveur (1471-1528) - Maître de la Renaissance allemande" },
+            { front: "✍️ Johann Wolfgang von Goethe", back: "🇩🇪 Écrivain (1749-1832) - Auteur de Faust, figure majeure de la littérature" },
+            { front: "🎬 Marlene Dietrich", back: "🇩🇪 Actrice (1901-1992) - Icône du cinéma, symbole de glamour" },
+            
+            // Artistes français
+            { front: "🎨 Claude Monet", back: "🇫🇷 Peintre (1840-1926) - Père de l'impressionnisme, Les Nymphéas" },
+            { front: "🗿 Auguste Rodin", back: "🇫🇷 Sculpteur (1840-1917) - Le Penseur, maître de la sculpture moderne" },
+            { front: "🎭 Molière", back: "🇫🇷 Dramaturge (1622-1673) - Génie de la comédie, Le Malade imaginaire" },
+            { front: "🎵 Édith Piaf", back: "🇫🇷 Chanteuse (1915-1963) - Voix emblématique, La Vie en rose" }
+        ];
+
+        let flippedCards = new Set();
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let questions = [];
+        let userAnswers = [];
+
+        function createCard(item, cardType = 'vocabulary') {
+            const card = document.createElement('div');
+            let className = 'card';
+            if (cardType === 'date') className += ' date-card';
+            if (cardType === 'symbol') className += ' symbol-card';
+            card.className = className;
+            
+            card.innerHTML = `
+                <div class="card-inner">
+                    <div class="card-face card-front">
+                        ${item.front}
+                    </div>
+                    <div class="card-face card-back">
+                        ${item.back}
+                    </div>
+                </div>
+            `;
+
+            card.addEventListener('click', function() {
+                this.classList.toggle('flipped');
+                updateStats();
+            });
+
+            return card;
+        }
+
+        function initCards() {
+            const vocabSection = document.getElementById('vocabulary-section');
+            const datesSection = document.getElementById('dates-section');
+            const symbolsSection = document.getElementById('symbols-section');
+            const allSection = document.getElementById('all-section');
+
+            vocabSection.innerHTML = '';
+            datesSection.innerHTML = '';
+            symbolsSection.innerHTML = '';
+            allSection.innerHTML = '';
+
+            vocabulary.forEach(item => {
+                vocabSection.appendChild(createCard(item, 'vocabulary'));
+                allSection.appendChild(createCard(item, 'vocabulary'));
+            });
+
+            dates.forEach(item => {
+                datesSection.appendChild(createCard(item, 'date'));
+                allSection.appendChild(createCard(item, 'date'));
+            });
+
+            symbols.forEach(item => {
+                symbolsSection.appendChild(createCard(item, 'symbol'));
+                allSection.appendChild(createCard(item, 'symbol'));
+            });
+
+            updateStats();
+        }
+
+        function showTab(tab) {
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            document.getElementById('vocabulary-section').classList.add('hidden');
+            document.getElementById('dates-section').classList.add('hidden');
+            document.getElementById('symbols-section').classList.add('hidden');
+            document.getElementById('all-section').classList.add('hidden');
+
+            if (tab === 'vocabulary') {
+                document.getElementById('vocabulary-section').classList.remove('hidden');
+            } else if (tab === 'dates') {
+                document.getElementById('dates-section').classList.remove('hidden');
+            } else if (tab === 'symbols') {
+                document.getElementById('symbols-section').classList.remove('hidden');
+            } else {
+                document.getElementById('all-section').classList.remove('hidden');
+            }
+        }
+
+        function updateStats() {
+            // Stats display removed - function kept for compatibility
+        }
+
+        function resetAll() {
+            // Reset button removed - function kept for compatibility
+            document.querySelectorAll('.card').forEach(card => {
+                card.classList.remove('flipped');
+            });
+        }
+
+        function showPage(page) {
+            document.querySelectorAll('.page-button').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            document.getElementById('cards-page').classList.remove('active');
+            document.getElementById('matching-page').classList.remove('active');
+            
+            if (page === 'cards') {
+                document.getElementById('cards-page').classList.add('active');
+            } else if (page === 'matching') {
+                document.getElementById('matching-page').classList.add('active');
+                if (questions.length === 0) {
+                    generateQuestions();
+                    displayQuestion();
+                }
+            }
+        }
+
+        // Quiz functions
+        function generateQuestions() {
+            questions = [];
+            
+            const shuffledVocab = [...vocabulary].sort(() => Math.random() - 0.5);
+            
+            shuffledVocab.forEach(item => {
+                const otherVocab = vocabulary.filter(v => v.back !== item.back);
+                const shuffledWrong = [...otherVocab].sort(() => Math.random() - 0.5);
+                const wrongAnswers = shuffledWrong.slice(0, 2).map(v => v.back);
+                
+                const options = [item.back, ...wrongAnswers];
+                
+                for (let i = options.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [options[i], options[j]] = [options[j], options[i]];
+                }
+                
+                questions.push({
+                    german: item.front,
+                    correct: item.back,
+                    options: options
+                });
+            });
+            
+            userAnswers = new Array(questions.length).fill(null);
+        }
+
+        function displayQuestion() {
+            if (currentQuestionIndex >= questions.length) {
+                showFinalScore();
+                return;
+            }
+
+            const question = questions[currentQuestionIndex];
+            const container = document.getElementById('question-container');
+            
+            container.innerHTML = `
+                <div class="german-word">${question.german}</div>
+                <div class="options-grid">
+                    ${question.options.map((option, index) => `
+                        <button class="option-button" onclick="selectAnswer('${option.replace(/'/g, "\\'")}', ${index})" id="option-${index}">
+                            ${option}
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+
+            if (userAnswers[currentQuestionIndex] !== null) {
+                const selectedOption = userAnswers[currentQuestionIndex];
+                highlightAnswer(selectedOption, question.correct);
+            }
+
+            updateProgress();
+            updateNavigationButtons();
+            document.getElementById('total-questions').textContent = questions.length;
+        }
+
+        function selectAnswer(selected, optionIndex) {
+            const question = questions[currentQuestionIndex];
+            userAnswers[currentQuestionIndex] = selected;
+            
+            highlightAnswer(selected, question.correct);
+            calculateScore();
+            
+            document.querySelectorAll('.option-button').forEach(btn => {
+                btn.disabled = true;
+            });
+        }
+
+        function highlightAnswer(selected, correct) {
+            document.querySelectorAll('.option-button').forEach(btn => {
+                btn.classList.remove('correct', 'incorrect');
+                btn.disabled = true;
+                
+                if (btn.textContent.trim() === correct) {
+                    btn.classList.add('correct');
+                } else if (btn.textContent.trim() === selected && selected !== correct) {
+                    btn.classList.add('incorrect');
+                }
+            });
+        }
+
+        function calculateScore() {
+            score = 0;
+            userAnswers.forEach((answer, index) => {
+                if (answer === questions[index].correct) {
+                    score++;
+                }
+            });
+            document.getElementById('score').textContent = score;
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+        }
+
+        function updateNavigationButtons() {
+            const prevButton = document.getElementById('prev-button');
+            const nextButton = document.getElementById('next-button');
+            
+            prevButton.disabled = currentQuestionIndex === 0;
+            
+            if (currentQuestionIndex === questions.length - 1) {
+                nextButton.textContent = '✅ Beenden';
+            } else {
+                nextButton.textContent = 'Weiter ➡️';
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                displayQuestion();
+            } else {
+                showFinalScore();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                displayQuestion();
+            }
+        }
+
+        function showFinalScore() {
+            const container = document.getElementById('question-container');
+            const percentage = Math.round((score / questions.length) * 100);
+            
+            let message = '';
+            let emoji = '';
+            
+            if (percentage === 100) {
+                message = 'Perfekt! Du bist ein Champion der deutsch-französischen Freundschaft! 🏆';
+                emoji = '🌟';
+            } else if (percentage >= 80) {
+                message = 'Ausgezeichnete Arbeit! Mach weiter so! 👏';
+                emoji = '🎉';
+            } else if (percentage >= 60) {
+                message = 'Gut gemacht! Noch eine kleine Anstrengung! 💪';
+                emoji = '👍';
+            } else {
+                message = 'Lerne weiter, du schaffst das! 📚';
+                emoji = '💡';
+            }
+            
+            container.innerHTML = `
+                <div style="text-align: center; padding: 30px;">
+                    <div style="font-size: 4em; margin-bottom: 15px;">${emoji}</div>
+                    <h2 style="color: #002395; margin-bottom: 15px;">Quiz beendet!</h2>
+                    <div style="font-size: 1.8em; font-weight: bold; color: #DD0000; margin-bottom: 15px;">
+                        ${score} / ${questions.length}
+                    </div>
+                    <div style="font-size: 1.3em; color: #000; margin-bottom: 15px;">
+                        ${percentage}% Erfolg
+                    </div>
+                    <p style="font-size: 1.1em; color: #333;">
+                        ${message}
+                    </p>
+                </div>
+            `;
+            
+            document.getElementById('prev-button').style.display = 'none';
+            document.getElementById('next-button').style.display = 'none';
+            document.getElementById('restart-button').style.display = 'inline-block';
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            generateQuestions();
+            displayQuestion();
+            
+            document.getElementById('prev-button').style.display = 'inline-block';
+            document.getElementById('next-button').style.display = 'inline-block';
+            document.getElementById('restart-button').style.display = 'none';
+            
+            document.getElementById('score').textContent = '0';
+        }
+
+        // Initialize cards on page load
+        initCards();
+    </script>
+</body>
+</html>
